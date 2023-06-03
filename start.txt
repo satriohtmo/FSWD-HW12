@@ -1,0 +1,3 @@
+cd tic-tac-toe 
+npm install
+npm run start / npm start

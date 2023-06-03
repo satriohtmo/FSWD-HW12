@@ -3,16 +3,60 @@ import "./TicTacToe.css";
 
 const TicTacToe = () => {
   const [turn, setTurn] = useState("x");
-  const handelClick = (num) => {
-    if (turn === "x") {
-      setTurn("o");
-    } else {
-      setTurn("x");
+  const [cells, setCells] = useState(Array(9).fill(""));
+  const [winner, setWinner] = useState();
+
+  const checkForWinner = (squares) => {
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    for (let i = 0; i < lines.length; i++) {
+      console.log(lines[i]);
+      const [a, b, c] = lines[i];
+      console.log([a, b, c]);
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        setWinner(squares[a]);
+      }
     }
   };
-  const Cell = ({ num }) => {
-    return <td onClick={() => handelClick(num)}>-</td>;
+
+  const handelClick = (num) => {
+    if (cells[num] !== "") {
+      alert("this cell already fill");
+      return;
+    }
+
+    let squares = [...cells];
+
+    if (turn === "x") {
+      squares[num] = "x";
+      setTurn("o");
+    } else {
+      squares[num] = "o";
+      setTurn("x");
+    }
+
+    checkForWinner(squares);
+    setCells(squares);
+    console.log(squares);
   };
+
+  const handleRestart = () => {
+    setWinner(null);
+    setCells(Array(9).fill(""));
+  };
+
+  const Cell = ({ num }) => {
+    return <td onClick={() => handelClick(num)}>{cells[num]}</td>;
+  };
+
   return (
     <div className="container">
       <table>
@@ -35,6 +79,12 @@ const TicTacToe = () => {
           </tr>
         </tbody>
       </table>
+      {winner && (
+        <>
+          <p>{winner} is the winner !</p>
+          <button onClick={() => handleRestart()}>Play Again</button>
+        </>
+      )}
     </div>
   );
 };
